@@ -2,6 +2,8 @@
 
 server_root="/var/www"
 wp_source="https://wordpress.org/latest.tar.gz"
+user="wpuser"
+database="wpdatabase"
 
 green="\033[32m"
 red="\033[31m"
@@ -20,17 +22,16 @@ echo -e "$green [+] Changing permissions$default"
 sudo chown www-data:www-data $server_root/* -R
 mv $server_root/index.html $server_root/index.html.orig
 
-echo -e "$red [!] Configuring Database. Please follow the steps $default"
-echo -e "$red [!] Enter MySQL shell and create a database for WordPress $default"
-echo -e "$red [!] Once on Shell, create the Database $default"
-echo ""
-echo -e "$green [COMMANDS] $default "
-echo -e " $ mysql -u root -p"
-echo -e " MYSQL> CREATE DATABASE $green wpdatabase$default;"
-echo -e " MYSQL> CREATE USER $green wpuser$default@localhost;"
-echo -e " MYSQL> SET PASSWORD FOR $green wpuser$default@localhost= PASSWORD('$green password$default');"
-echo -e " MYSQL> GRANT ALL PRIVILEGES on $green wpdatabase$default.* TO $green wpuser$default@localhost;"
-echo -e " MYSQL> FLUSH PRIVILEGES;"
-echo -e " MYSQL> exit"
-echo -e "$green--------------------------------------------------------------------------------$default"
-echo -e "When it's done just access your Domain and install wordpress through their assistant"
+echo -e "$red [+] Configuring Database. Please choose a password for WordPress database $default"
+read $passwd;
+Q1="CREATE DATABASE $database;"
+Q2="CREATE USER $user@localhost;"
+Q3="SET PASSWORD FOR $user@localhost= PASSWORD('$passwd');"
+Q4="GRANT ALL PRIVILEGES on $database.* TO $user@localhost;"
+Q5="FLUSH PRIVILEGES;"
+SQL=${Q1}${Q2}${Q3}${Q4}${Q5}
+
+mysql -u root -p -e $SQL
+
+echo -e "$green [+] Done!"
+echo -e " Please access the WordPress install file through your$red browser$default"
