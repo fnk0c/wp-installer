@@ -23,15 +23,17 @@ sudo chown www-data:www-data $server_root/* -R
 mv $server_root/index.html $server_root/index.html.orig
 
 echo -e "$red [+] Configuring Database. Please choose a password for WordPress database $default"
-read $passwd;
+echo "Type $user@localhost password"
+read pass
+
 Q1="CREATE DATABASE $database;"
 Q2="CREATE USER $user@localhost;"
-Q3="SET PASSWORD FOR $user@localhost= PASSWORD('$passwd');"
+Q3="SET PASSWORD FOR $user@localhost= PASSWORD('$pass');"
 Q4="GRANT ALL PRIVILEGES on $database.* TO $user@localhost;"
 Q5="FLUSH PRIVILEGES;"
 SQL=${Q1}${Q2}${Q3}${Q4}${Q5}
 
-mysql -u root -p -e $SQL
+`mysql -u root -p -e "$SQL"`
 
 echo -e "$green [+] Done!"
 echo -e " Please access the WordPress install file through your$red browser$default"
