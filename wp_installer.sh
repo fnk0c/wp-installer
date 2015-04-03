@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#AUTHOR = FNKOC <franco.c.colombino@gmail.com>
 server_root="/var/www"
 wp_source="https://wordpress.org/latest.tar.gz"
 user="wpuser"
@@ -36,4 +36,14 @@ SQL=${Q1}${Q2}${Q3}${Q4}${Q5}
 `mysql -u root -p -e "$SQL"`
 
 echo -e "$green [+] Done!"
-echo -e " Please access the WordPress install file through your$red browser$default"
+echo -e "Would you like to open your browser in order to install WordPress? [Firefox]"
+read choice
+
+if [ $choice = "n" ]
+then
+	echo -e "$red [!] Please, open your browser and access your WordPress in order to complete install$default"
+	echo -e "$green [+] Bye! $default"
+	exit
+else
+	`firefox --new-tab http://localhost`
+fi
