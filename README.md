@@ -18,9 +18,8 @@ https://wordpress.org/latest.tar.gz
 * Create User
 * Set privileges
 
-Change the values on the script **[line 5 and 6]**
-#####Configure server root
-Change valeu if you want other directory **[Default: /var/www (line 3)]**
+#####Move files to server root
+* Copy all source files to server root
 
 ###Usage
     $ git clone https://github.com/fnk0c/wp-installer.git
