@@ -1,6 +1,13 @@
 #!/bin/bash
 #AUTHOR = FNKOC <franco.c.colombino@gmail.com>
 #GITHUB = https://github.com/fnk0c
+#LAST UPDATE = 03/05/2015
+#CHANGES:	ask user to set variables
+#			typos
+#			comments
+#			dialog
+
+#START SCRIPT ##################################################################
 server_root="/var/www"
 wp_source="https://wordpress.org/latest.tar.gz"
 user="wpuser"
@@ -13,62 +20,74 @@ default="\033[00m"
 
 #START SETTING VARIABLES #######################################################
 
-echo -e "$green [+] Setting variables $default"
-echo -e "$red >> Use$white $server_root$red as server root? [y/n]$default"
-read choice
-if [ "$choice" = "n" ]
-then
-	echo " >> Write server root directory"
-	read server_root
-	echo -e "$green [+] Using$white $server_root $default"
+dialog --title "Setting variables" --yesno "Use $server_root as server root?" 0 0
+
+if [ "$?" = "1" ]
+then 
+	server_root=$( dialog --stdout --inputbox "Set server root:" 0 0 )
 else
-	echo -e "$green [+] Using$white $server_root $default"
+	continue
 fi
 
-echo -e "$red >> Set$white $database$red WordPress Database? [y/n]$default"
-read choice
-if [ "$choice" = "n" ]
-then
-	echo "Choose a Database name"
-	read database
-	echo -e "$green [+] Using$white $database $default"
+dialog --title "Setting variables" --yesno "Set $database as WordPress \
+Database?" 0 0
+
+if [ "$?" = "1" ]
+then 
+	database=$( dialog --stdout --inputbox "Set WordPress DB name:" 0 0 )
 else
-	echo -e "$green [+] Using$white $database $default"
+	continue
 fi
 
-echo -e "$red >> Use$white $user$red as WordPress database username? [y/n]$default"
-read choice
-if [ "$choice" = "n" ]
-then
-	echo "Choose a username"
-	read user
-	echo -e "$green [+] Using$white $user $default"
+dialog --title "Setting variables" --yesno "Use $user as WordPress database \
+username?" 0 0
+
+if [ "$?" = "1" ]
+then 
+	user=$( dialog --stdout --inputbox "Set WordPress username:" 0 0 )
 else
-	echo -e "$green [+] Using$white $user $default"
+	continue
 fi
+
+dialog --title "setting variables" --msgbox \
+"[Server Root] = $server_root \
+[Database name] = $database \
+[MySQL Username] = $user" 10 35 --and-widget
 
 #END SETTING VARIABLES #########################################################
 
 #INSTALLING DEPENDENCIES #######################################################
 
 echo -e "$green [+] Installing dependencies $default"
-sudo apt-get install apache2 php5 php5-gd php5-mysql libapache2-mod-php5 mysql-server
+sudo apt-get install apache2 php5 php5-gd php5-mysql libapache2-mod-php5 \
+mysql-server
 
+#END INSTALLING DEPENDENCIES ###################################################
+
+#DOWNLOADING SOURCE ############################################################
 echo -e "$green [+] Downloading Wordpress$default"
 wget $wp_source
 echo -e "$green [+] Unpacking Wordpress$default"
 tar xpvf latest.tar.gz
+
+#END DOWNLOADING SOURCE ########################################################
+
+#COPING FILES TO SERVER ROOT ###################################################
 echo -e "$green [+] Copying files to $server_root"
 sudo rsync -avP wordpress/ $server_root
+
+#SETTING PERMITIONS ############################################################
 echo -e "$green [+] Changing permissions$default"
 sudo chown www-data:www-data $server_root/* -R
 local_user=`whoami`
 sudo usermod -a -G www-data $local_user
 mv $server_root/index.html $server_root/index.html.orig
 
-echo -e "$red [+] Configuring Database. Please choose a password for WordPress database $default"
-echo "Type $user@localhost password"
-read pass
+#END SETTING PERMITIONS ########################################################
+
+#CONFIGURING MYSQL DATABASE ####################################################
+pass=$( dialog --stdout --inputbox "Type $user@localhost password" 0 0 )
+echo -e "$green [+] Type MySQL root password $default"
 
 Q1="CREATE DATABASE $database;"
 Q2="CREATE USER $user@localhost;"
@@ -79,15 +98,23 @@ SQL=${Q1}${Q2}${Q3}${Q4}${Q5}
 
 `mysql -u root -p -e "$SQL"`
 
+#END CONFIGURING MYSQL DATABASE ################################################
+
+#FINISHING #####################################################################
 echo -e "$green [+] Done!"
-echo -e "Would you like to open your browser in order to install WordPress? [Firefox]"
+echo -e "Would you like to open your browser in order to install WordPress? \
+[Firefox] [y/n] $default"
 read choice
 
 if [ $choice = "n" ]
 then
-	echo -e "$red [!] Please, open your browser and access your WordPress in order to complete install$default"
+	echo -e "$red [!] Please, open your browser and access your WordPress in \
+order to complete install$default"
 	echo -e "$green [+] Bye! $default"
 	exit
 else
-	`firefox --new-tab http://localhost`
+	echo -e "$green [+] Firefox started in background $default"
+	`firefox --new-tab http://localhost &`
 fi
+
+#END SCRIPT ####################################################################
