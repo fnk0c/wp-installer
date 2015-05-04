@@ -6,6 +6,7 @@
 #			typos
 #			comments
 #			dialog
+#			generates wp-config.php
 
 #START SCRIPT ##################################################################
 server_root="/var/www"
@@ -100,13 +101,20 @@ SQL=${Q1}${Q2}${Q3}${Q4}${Q5}
 
 #END CONFIGURING MYSQL DATABASE ################################################
 
-#FINISHING #####################################################################
-echo -e "$green [+] Done!"
-echo -e "Would you like to open your browser in order to install WordPress? \
-[Firefox] [y/n] $default"
-read choice
+#GENERATING WP-CONFIG.PHP ######################################################
+cp $server_root/wp-config-sample.php $server_root/wp-config.php
+sed -i "s/database_name_here/$database/g" wp-config.php
+sed -i "s/username_here/$user/g" wp-config.php
+sed -i "s/password_here/$pass/g" wp-config.php
 
-if [ $choice = "n" ]
+#FINISH GENERATING WP-CONFIG.PHP ###############################################
+
+#FINISHING #####################################################################
+dialog --title "Complete" --msgbox "Done!" 0 0
+dialog --title "Complete" --yesno "Would you like to open your browser in order\
+ to install WordPress? [Firefox]" 0 0
+
+if [ $? = "1" ]
 then
 	echo -e "$red [!] Please, open your browser and access your WordPress in \
 order to complete install$default"
