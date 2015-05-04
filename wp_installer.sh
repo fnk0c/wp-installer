@@ -103,9 +103,9 @@ SQL=${Q1}${Q2}${Q3}${Q4}${Q5}
 
 #GENERATING WP-CONFIG.PHP ######################################################
 cp $server_root/wp-config-sample.php $server_root/wp-config.php
-sed -i "s/database_name_here/$database/g" wp-config.php
-sed -i "s/username_here/$user/g" wp-config.php
-sed -i "s/password_here/$pass/g" wp-config.php
+sed -i "s/database_name_here/$database/g" $server_root/wp-config.php
+sed -i "s/username_here/$user/g" $server_root/wp-config.php
+sed -i "s/password_here/$pass/g" $server_root/wp-config.php
 
 #FINISH GENERATING WP-CONFIG.PHP ###############################################
 
