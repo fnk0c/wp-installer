@@ -1,12 +1,22 @@
 #!/bin/bash
 #AUTHOR = FNKOC <franco.c.colombino@gmail.com>
 #GITHUB = https://github.com/fnk0c
-#LAST UPDATE = 03/05/2015
-#CHANGES:	ask user to set variables
-#			typos
-#			comments
-#			dialog
-#			generates wp-config.php
+#LAST UPDATE = 12/05/2015
+#VERSION: 0.3
+#STATUS: UNSTABLE
+#STABLE VERSION: 0.2 (https://github.com/fnk0c/wp-installer/releases/tag/0.2)
+#CHANGES:	CentOS support
+
+#INSTALL WP-INSTALLER DEPENDENCIES #############################################
+if [ -e "/etc/yum" ]
+then
+	sudo yum install dialog
+elif [ -e "/etc/apt" ]
+then
+	sudo apt-get install dialog
+fi
+
+#END INSTALL WP-INSTALLER DEPENDENCIES #########################################
 
 #START SCRIPT ##################################################################
 server_root="/var/www"
@@ -57,13 +67,21 @@ dialog --title "setting variables" --msgbox \
 
 #END SETTING VARIABLES #########################################################
 
-#INSTALLING DEPENDENCIES #######################################################
+#INSTALLING AND CONFIGURING DEPENDENCIES #######################################
+echo -e "$green [+] Installing and configuring dependencies $default"
 
-echo -e "$green [+] Installing dependencies $default"
-sudo apt-get install apache2 php5 php5-gd php5-mysql libapache2-mod-php5 \
-mysql-server
-
-#END INSTALLING DEPENDENCIES ###################################################
+if [ -e "/etc/yum" ]
+then
+	sudo yum install httpd php php-gd mariadb-server mariadb
+	sudo systemctl start mariadb
+	sudo systemctl enable mariadb
+	`mysql_secure_installation`
+elif [ -e "/etc/apt" ]
+then
+	sudo apt-get install apache2 php5 php5-gd php5-mysql libapache2-mod-php5 \
+	mysql-server
+fi
+#END INSTALLING AND CONFIGURING DEPENDENCIES ###################################
 
 #DOWNLOADING SOURCE ############################################################
 echo -e "$green [+] Downloading Wordpress$default"
@@ -79,9 +97,16 @@ sudo rsync -avP wordpress/ $server_root
 
 #SETTING PERMITIONS ############################################################
 echo -e "$green [+] Changing permissions$default"
-sudo chown www-data:www-data $server_root/* -R
-local_user=`whoami`
-sudo usermod -a -G www-data $local_user
+if [ -e "/etc/yum" ]
+then
+	sudo chown -R apache:apache $server_root/*
+
+elif [ -e "/etc/apt" ]
+then
+	sudo chown www-data:www-data $server_root/* -R
+	local_user=`whoami`
+	sudo usermod -a -G www-data $local_user
+fi
 mv $server_root/index.html $server_root/index.html.orig
 
 #END SETTING PERMITIONS ########################################################
