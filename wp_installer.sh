@@ -6,14 +6,15 @@
 #STATUS: UNSTABLE
 #STABLE VERSION: 0.2 (https://github.com/fnk0c/wp-installer/releases/tag/0.2)
 #CHANGES:	CentOS support
+#			Configure mysql for CentOS
 
 #INSTALL WP-INSTALLER DEPENDENCIES #############################################
 if [ -e "/etc/yum" ]
 then
-	sudo yum install dialog
+	sudo yum install dialog wget
 elif [ -e "/etc/apt" ]
 then
-	sudo apt-get install dialog
+	sudo apt-get install dialog wget
 fi
 
 #END INSTALL WP-INSTALLER DEPENDENCIES #########################################
@@ -72,10 +73,13 @@ echo -e "$green [+] Installing and configuring dependencies $default"
 
 if [ -e "/etc/yum" ]
 then
-	sudo yum install httpd php php-gd mariadb-server mariadb
+	sudo yum install httpd php php-gd php-mysql mariadb-server mariadb
 	sudo systemctl start mariadb
+	sudo systemctl start httpd
 	sudo systemctl enable mariadb
-	`mysql_secure_installation`
+	sudo systemctl enable httpd
+	mysql_secure_installation
+
 elif [ -e "/etc/apt" ]
 then
 	sudo apt-get install apache2 php5 php5-gd php5-mysql libapache2-mod-php5 \
@@ -99,7 +103,7 @@ sudo rsync -avP wordpress/ $server_root
 echo -e "$green [+] Changing permissions$default"
 if [ -e "/etc/yum" ]
 then
-	sudo chown -R apache:apache $server_root/*
+	sudo chown apache:apache $server_root/* -R 
 
 elif [ -e "/etc/apt" ]
 then
