@@ -1,12 +1,12 @@
 #!/bin/bash
 #AUTHOR = FNKOC <franco.c.colombino@gmail.com>
 #GITHUB = https://github.com/fnk0c
-#LAST UPDATE = 12/05/2015
-#VERSION: 0.3
+#LAST UPDATE = 16/05/2015
+#VERSION: 0.4
 #STATUS: UNSTABLE
-#STABLE VERSION: 0.2 (https://github.com/fnk0c/wp-installer/releases/tag/0.2)
-#CHANGES:	CentOS support
-#			Configure mysql for CentOS
+#STABLE VERSION: 0.3 (https://github.com/fnk0c/wp-installer/releases/tag/0.3)
+#CHANGES:	Arch Linux support
+#			Configure mysql for Arch
 
 #INSTALL WP-INSTALLER DEPENDENCIES #############################################
 if [ -e "/etc/yum" ]
@@ -15,6 +15,9 @@ then
 elif [ -e "/etc/apt" ]
 then
 	sudo apt-get install dialog wget
+elif [ -e "/etc/pacman.d" ]
+then
+	sudo pacman -S dialog wget
 fi
 
 #END INSTALL WP-INSTALLER DEPENDENCIES #########################################
@@ -84,6 +87,15 @@ elif [ -e "/etc/apt" ]
 then
 	sudo apt-get install apache2 php5 php5-gd php5-mysql libapache2-mod-php5 \
 	mysql-server
+elif [ -e "/etc/pacman.d" ]
+then
+	sudo pacman -S apache php php-apache mariadb
+	sudo systemctl start mysqld
+	sudo systemctl start httpd
+	sudo systemctl enable mysqld
+	sudo systemctl enable httpd
+	mysql_secure_installation
+	sed -i "s/;extension=mysql.so/extension=mysql.so/g" /etc/php/php.ini
 fi
 #END INSTALLING AND CONFIGURING DEPENDENCIES ###################################
 

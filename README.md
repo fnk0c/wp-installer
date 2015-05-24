@@ -1,5 +1,5 @@
 # wp-installer
-***Automates Wordpress installation on Debian/CentOS based systems***
+***Automates Wordpress installation on Linux systems***
 
 ###Tested on:
 * Debian 7
@@ -7,6 +7,7 @@
 * Ubuntu 14.04 LTS
 * CentOS 7
 * Fedora 21
+* Manjaro 0.8.12 (Unstable)
 
 ###This script makes the following actions:
 
@@ -27,12 +28,19 @@
 * php-gd
 * php-mysql
 
+***Arch*** (Unstable)
+* apache
+* mariadb
+* php
+* php-apache
+
 #####Download the lastest WordPress tar ball
 https://wordpress.org/latest.tar.gz
 #####Configure MySQL database for WordPress
 * Create Database
 * Create User
 * Set privileges
+* Modify php.ini on Arch systems
 
 #####Move files to server root
 * Copy all source files to server root
