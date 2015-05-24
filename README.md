@@ -31,7 +31,9 @@
 ***Arch*** (Unstable)
 * apache
 * mariadb
+* mariadb-server
 * php
+* php-gd
 * php-apache
 
 #####Download the lastest WordPress tar ball
@@ -40,7 +42,7 @@ https://wordpress.org/latest.tar.gz
 * Create Database
 * Create User
 * Set privileges
-* Modify php.ini on Arch systems
+* Modify php.ini and httpd.conf on Arch systems
 
 #####Move files to server root
 * Copy all source files to server root

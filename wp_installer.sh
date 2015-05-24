@@ -1,12 +1,13 @@
 #!/bin/bash
 #AUTHOR = FNKOC <franco.c.colombino@gmail.com>
 #GITHUB = https://github.com/fnk0c
-#LAST UPDATE = 16/05/2015
+#LAST UPDATE = 24/05/2015
 #VERSION: 0.4
 #STATUS: UNSTABLE
 #STABLE VERSION: 0.3 (https://github.com/fnk0c/wp-installer/releases/tag/0.3)
 #CHANGES:	Arch Linux support
 #			Configure mysql for Arch
+#			Edit php.ini and httpd.conf
 
 #INSTALL WP-INSTALLER DEPENDENCIES #############################################
 if [ -e "/etc/yum" ]
@@ -89,13 +90,21 @@ then
 	mysql-server
 elif [ -e "/etc/pacman.d" ]
 then
-	sudo pacman -S apache php php-apache mariadb
+	sudo pacman -S apache php php-apache mariadb php-gd
+    sudo mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
 	sudo systemctl start mysqld
 	sudo systemctl start httpd
 	sudo systemctl enable mysqld
 	sudo systemctl enable httpd
 	mysql_secure_installation
 	sed -i "s/;extension=mysql.so/extension=mysql.so/g" /etc/php/php.ini
+	sed -i "s/;extension=mysql.so/extension=mysql.so/g" /etc/php/php.ini
+	sed -i "s/;extension=mysqli.so/extension=mysqli.so/g" /etc/php/php.ini
+	sed -i "s/LoadModule mpm_event_module modules/mod_mpm_event.so/LoadModule \
+mpm_prefork_module modules/mod_mpm_prefork.so/g" /etc/httpd/conf/httpd.conf
+	echo "LoadModule php5_module modules/libphp5.so" >> /etc/httpd/conf/httpd.\
+conf
+	echo "Include conf/extra/php5_module.conf" >> /etc/httpd/conf/httpd.conf
 fi
 #END INSTALLING AND CONFIGURING DEPENDENCIES ###################################
 
