@@ -101,11 +101,16 @@ then
 	mysql_secure_installation
 	sudo sed -i "s/;extension=mysql.so/extension=mysql.so/g" /etc/php/php.ini
 	sudo sed -i "s/;extension=mysqli.so/extension=mysqli.so/g" /etc/php/php.ini
+
+	#Isn't working
 	sudo sed -i "s/LoadModule mpm_event_module modules/mod_mpm_event.so/LoadModule \
 mpm_prefork_module modules/mod_mpm_prefork.so/g" /etc/httpd/conf/httpd.conf
-	sudo echo "LoadModule php5_module modules/libphp5.so" >> /etc/httpd/conf/httpd.\
-conf
-	sudo echo "Include conf/extra/php5_module.conf" >> /etc/httpd/conf/httpd.conf
+
+	#Probably work, but it add at the end of the file
+	sudo sh -c 'echo "LoadModule php5_module modules/libphp5.so" >> /etc/httpd/\
+conf/httpd.conf'
+	sudo sh -c 'echo "Include conf/extra/php5_module.conf" >> /etc/httpd/conf/\
+httpd.conf'
 fi
 #END INSTALLING AND CONFIGURING DEPENDENCIES ###################################
 
