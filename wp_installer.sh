@@ -8,6 +8,8 @@
 #CHANGES:	Arch Linux support
 #			Configure mysql for Arch
 #			Edit php.ini and httpd.conf
+#			Fix sed permission
+#			pacman --needed argument
 
 #INSTALL WP-INSTALLER DEPENDENCIES #############################################
 if [ -e "/etc/yum" ]
@@ -18,7 +20,7 @@ then
 	sudo apt-get install dialog wget
 elif [ -e "/etc/pacman.d" ]
 then
-	sudo pacman -S dialog wget
+	sudo pacman -S dialog wget --needed 
 fi
 
 #END INSTALL WP-INSTALLER DEPENDENCIES #########################################
@@ -90,21 +92,20 @@ then
 	mysql-server
 elif [ -e "/etc/pacman.d" ]
 then
-	sudo pacman -S apache php php-apache mariadb php-gd
-    sudo mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
+	sudo pacman -S --needed apache php php-apache mariadb php-gd
+	sudo mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
 	sudo systemctl start mysqld
 	sudo systemctl start httpd
 	sudo systemctl enable mysqld
 	sudo systemctl enable httpd
 	mysql_secure_installation
-	sed -i "s/;extension=mysql.so/extension=mysql.so/g" /etc/php/php.ini
-	sed -i "s/;extension=mysql.so/extension=mysql.so/g" /etc/php/php.ini
-	sed -i "s/;extension=mysqli.so/extension=mysqli.so/g" /etc/php/php.ini
-	sed -i "s/LoadModule mpm_event_module modules/mod_mpm_event.so/LoadModule \
+	sudo sed -i "s/;extension=mysql.so/extension=mysql.so/g" /etc/php/php.ini
+	sudo sed -i "s/;extension=mysqli.so/extension=mysqli.so/g" /etc/php/php.ini
+	sudo sed -i "s/LoadModule mpm_event_module modules/mod_mpm_event.so/LoadModule \
 mpm_prefork_module modules/mod_mpm_prefork.so/g" /etc/httpd/conf/httpd.conf
-	echo "LoadModule php5_module modules/libphp5.so" >> /etc/httpd/conf/httpd.\
+	sudo echo "LoadModule php5_module modules/libphp5.so" >> /etc/httpd/conf/httpd.\
 conf
-	echo "Include conf/extra/php5_module.conf" >> /etc/httpd/conf/httpd.conf
+	sudo echo "Include conf/extra/php5_module.conf" >> /etc/httpd/conf/httpd.conf
 fi
 #END INSTALLING AND CONFIGURING DEPENDENCIES ###################################
 
@@ -162,7 +163,7 @@ sed -i "s/password_here/$pass/g" $server_root/wp-config.php
 #FINISHING #####################################################################
 dialog --title "Complete" --msgbox "Done!" 0 0
 dialog --title "Complete" --yesno "Would you like to open your browser in order\
- to install WordPress? [Firefox]" 0 0
+ to finish WordPress install? [Firefox]" 0 0
 
 if [ $? = "1" ]
 then
