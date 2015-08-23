@@ -19,6 +19,7 @@
 * php5-mysql
 * libapache2-mod-php5 
 * mysql-server
+* libmysqlclient-dev
 
 ***CentOS***
 * httpd
@@ -41,6 +42,7 @@ https://wordpress.org/latest.tar.gz
 #####Configure MySQL database for WordPress
 * Create Database
 * Create User
+* Set WordPress table prefix
 * Set privileges
 * Modify php.ini and httpd.conf on Arch systems
 

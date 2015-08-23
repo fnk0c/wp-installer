@@ -1,7 +1,7 @@
 #!/bin/bash
 #AUTHOR = FNKOC <franco.c.colombino@gmail.com>
 #GITHUB = https://github.com/fnk0c
-#LAST UPDATE = 24/05/2015
+#LAST UPDATE = 17/08/2015
 #VERSION: 0.4
 #STATUS: UNSTABLE
 #STABLE VERSION: 0.3 (https://github.com/fnk0c/wp-installer/releases/tag/0.3)
@@ -10,7 +10,8 @@
 #			Edit php.ini and httpd.conf
 #			Fix sed permission
 #			pacman --needed argument
-#			Fix sed syntax (line 106 & 107)
+#			Fix sed syntax
+#			Set table prefix
 
 #INSTALL WP-INSTALLER DEPENDENCIES #############################################
 if [ -e "/etc/yum" ]
@@ -31,6 +32,7 @@ server_root="/var/www"
 wp_source="https://wordpress.org/latest.tar.gz"
 user="wpuser"
 database="wpdatabase"
+table="wp_"
 
 green="\033[32m"
 red="\033[31m"
@@ -58,6 +60,16 @@ else
 	continue
 fi
 
+dialog --title "Setting variables" --yesno "Set $table as WordPress \
+table prefix?" 0 0
+
+if [ "$?" = "1" ]
+then 
+	table=$( dialog --stdout --inputbox "Set WordPress table prefix:" 0 0 )
+else
+	continue
+fi
+
 dialog --title "Setting variables" --yesno "Use $user as WordPress database \
 username?" 0 0
 
@@ -71,6 +83,7 @@ fi
 dialog --title "setting variables" --msgbox \
 "[Server Root] = $server_root \
 [Database name] = $database \
+[Table prefix] = $table \
 [MySQL Username] = $user" 10 35 --and-widget
 
 #END SETTING VARIABLES #########################################################
@@ -90,7 +103,8 @@ then
 elif [ -e "/etc/apt" ]
 then
 	sudo apt-get install apache2 php5 php5-gd php5-mysql libapache2-mod-php5 \
-	mysql-server
+	mysql-server libmysqlclient-dev
+
 elif [ -e "/etc/pacman.d" ]
 then
 	sudo pacman -S --needed apache php php-apache mariadb php-gd
@@ -106,7 +120,8 @@ then
 	sudo sed -i "s/LoadModule mpm_event_module modules\/mod_mpm_event.so/LoadModule \
 mpm_prefork_module modules\/mod_mpm_prefork.so/g" /etc/httpd/conf/httpd.conf
 
-	#Probably work, but it add at the end of the file
+	#It has to be added in its sections. It isn't working, but i'm too lazy to
+	#fix (has to use sed command)
 	sudo sh -c 'echo "LoadModule php5_module modules/libphp5.so" >> /etc/httpd/\
 conf/httpd.conf'
 	sudo sh -c 'echo "Include conf/extra/php5_module.conf" >> /etc/httpd/conf/\
@@ -162,6 +177,7 @@ cp $server_root/wp-config-sample.php $server_root/wp-config.php
 sed -i "s/database_name_here/$database/g" $server_root/wp-config.php
 sed -i "s/username_here/$user/g" $server_root/wp-config.php
 sed -i "s/password_here/$pass/g" $server_root/wp-config.php
+sed -i "s/wp_/$table/g" $server_root/wp-config.php
 
 #FINISH GENERATING WP-CONFIG.PHP ###############################################
 
