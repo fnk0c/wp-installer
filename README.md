@@ -28,6 +28,7 @@
 * php
 * php-gd
 * php-mysql
+* php-xml
 
 ***Arch*** (Unstable)
 * apache
