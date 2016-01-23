@@ -93,7 +93,7 @@ echo -e "$green [+] Installing and configuring dependencies $default"
 
 if [ -e "/etc/yum" ]
 then
-	sudo yum install httpd php php-gd php-mysql mariadb-server mariadb
+	sudo yum install httpd php php-gd php-mysql php-xml mariadb-server mariadb
 	sudo systemctl start mariadb
 	sudo systemctl start httpd
 	sudo systemctl enable mariadb
