@@ -1,17 +1,17 @@
 #!/bin/bash
-#AUTHOR = FNKOC <franco.c.colombino@gmail.com>
-#GITHUB = https://github.com/fnk0c
-#LAST UPDATE = 17/08/2015
-#VERSION: 0.4
-#STATUS: UNSTABLE
-#STABLE VERSION: 0.3 (https://github.com/fnk0c/wp-installer/releases/tag/0.3)
-#CHANGES:	Arch Linux support
-#			Configure mysql for Arch
-#			Edit php.ini and httpd.conf
-#			Fix sed permission
-#			pacman --needed argument
-#			Fix sed syntax
-#			Set table prefix
+# AUTHOR = FNKOC <franco.c.colombino@gmail.com>
+# GITHUB = https://github.com/fnk0c
+# LAST UPDATE = 17/08/2015
+# VERSION: 0.4
+# STATUS: UNSTABLE
+# STABLE VERSION: 0.3 (https://github.com/fnk0c/wp-installer/releases/tag/0.3)
+# CHANGES:	Arch Linux support
+#			  Configure mysql for Arch
+#			  Edit php.ini and httpd.conf
+#			  Fix sed permission
+#			  pacman --needed argument
+#			  Fix sed syntax
+#			  Set table prefix
 
 # Installing wp-installer dependencies
 if [ -e "/etc/yum" ] ; then
