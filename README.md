@@ -38,7 +38,7 @@
 * php-gd
 * php-apache
 
-#### 2. Download the lastest WordPress tar ball
+#### 2. Download the lastest WordPress tarball
 https://wordpress.org/latest.tar.gz
 #### Configure MySQL database for WordPress
 * Create Database
