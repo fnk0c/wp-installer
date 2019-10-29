@@ -25,9 +25,9 @@ fi
 # Starting script
 server_root="/var/www"
 wp_source="https://wordpress.org/latest.tar.gz"
-user="wpuser"
-database="wpdatabase"
-table="wp_"
+user="axywpuser"
+database="axywpdatabase"
+table="col_"
 
 green="\033[32m"
 red="\033[31m"
@@ -157,5 +157,5 @@ order to complete install$default"
 	exit
 else
 	echo -e "$green [+] Firefox started in background $default"
-	`firefox --new-tab http://localhost &`
+	`firefox --new-tab http://localhost:80 &`
 fi
