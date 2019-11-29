@@ -34,7 +34,7 @@ red="\033[31m"
 white="\e[0;37m"
 default="\033[00m"
 
-# Starting setting of variables
+# Setting up variables
 dialog --title "Setting variables" --yesno "Use $server_root as server root?" 0 0
 
 if [ "$?" = "1" ] ; then
@@ -113,7 +113,7 @@ tar xpvf latest.tar.gz
 echo -e "$green [+] Copying files to $server_root"
 sudo rsync -avP wordpress/ $server_root
 
-# Setting permittions
+# Setting up permissions
 echo -e "$green [+] Changing permissions$default"
 if [ -e "/etc/yum" ] ; then
 	sudo chown apache:apache $server_root/* -R 
@@ -124,7 +124,7 @@ elif [ -e "/etc/apt" ] ; then
 fi
 mv $server_root/index.html $server_root/index.html.orig
 
-# Configuring MySQL database
+# Configuring MySQL Database
 pass=$( dialog --stdout --inputbox "Type $user@localhost password" 0 0 )
 echo -e "$green [+] Type MySQL root password $default"
 
@@ -137,7 +137,7 @@ SQL=${Q1}${Q2}${Q3}${Q4}${Q5}
 
 `mysql -u root -p -e "$SQL"`
 
-# Generating wp-config.php
+# Generating wp-config.php file
 cp $server_root/wp-config-sample.php $server_root/wp-config.php
 sed -i "s/database_name_here/$database/g" $server_root/wp-config.php
 sed -i "s/username_here/$user/g" $server_root/wp-config.php
